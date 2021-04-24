@@ -62,8 +62,7 @@ namespace ClassGenerate
             lblMsg.Text = "";
             cn.Server = txtServer.Text.Trim();
             //cn.Server = "(local)";
-            cn.Database = "EnterpriseManagementTest";//ElectricitySupplier
-            //cn.Database = "ElectricitySupplier";
+            cn.Database = "EnterpriseManagement";//ElectricitySupplier
             if (0==cbMethod.SelectedIndex)
             {
                 cn.IsWindows = true;

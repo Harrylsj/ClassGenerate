@@ -65,7 +65,6 @@
   <ItemGroup>
     <Compile Include="CommonFunction.cs" />
     <Compile Include="DbHelper.cs" />
-    <Compile Include="ATable.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Entity\User.cs" />
     <Compile Include="Log.cs" />
@@ -73,6 +72,7 @@
     <Compile Include="SnowflakeIdWorker.cs" />
     <Compile Include="ToExcel.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

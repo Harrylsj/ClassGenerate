@@ -7,7 +7,7 @@ using CommonLib;
 
 namespace CommonLib.Entity
 {
-   public class User : ATable, INotifyPropertyChanged, ICloneable
+   public class User
    {
       #region Member Variables
       SnowflakeIdWorker snowflakeIdWorker = new SnowflakeIdWorker();
@@ -27,52 +27,52 @@ namespace CommonLib.Entity
       public String UserID
       {
          get{ return userid_; }
-         set{ userid_ = value; NotifyPropertyChanged("UserID");}
+         set{ userid_ = value; }
       }
       public String DingDingUserID
       {
          get{ return dingdinguserid_; }
-         set{ dingdinguserid_ = value; NotifyPropertyChanged("DingDingUserID");}
+         set{ dingdinguserid_ = value; }
       }
       public String DingDingDeptID
       {
          get{ return dingdingdeptid_; }
-         set{ dingdingdeptid_ = value; NotifyPropertyChanged("DingDingDeptID");}
+         set{ dingdingdeptid_ = value; }
       }
       public String UserName
       {
          get{ return username_; }
-         set{ username_ = value; NotifyPropertyChanged("UserName");}
+         set{ username_ = value; }
       }
       public String Account
       {
          get{ return account_; }
-         set{ account_ = value; NotifyPropertyChanged("Account");}
+         set{ account_ = value; }
       }
       public String Password
       {
          get{ return password_; }
-         set{ password_ = value; NotifyPropertyChanged("Password");}
+         set{ password_ = value; }
       }
       public String ChangeTime
       {
          get{ return changetime_; }
-         set{ changetime_ = value; NotifyPropertyChanged("ChangeTime");}
+         set{ changetime_ = value; }
       }
       public String Mobile
       {
          get{ return mobile_; }
-         set{ mobile_ = value; NotifyPropertyChanged("Mobile");}
+         set{ mobile_ = value; }
       }
       public String WorkPlace
       {
          get{ return workplace_; }
-         set{ workplace_ = value; NotifyPropertyChanged("WorkPlace");}
+         set{ workplace_ = value; }
       }
       public String Memo
       {
          get{ return memo_; }
-         set{ memo_ = value; NotifyPropertyChanged("Memo");}
+         set{ memo_ = value; }
       }
       public String IsDeleted
       {
@@ -111,32 +111,6 @@ namespace CommonLib.Entity
          this.isdeleted_ = user_.isdeleted_;//
       }
       #endregion 
-      #region IModel Function
-      public string GetAsString()
-      {
-         return String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", this.userid_,this.dingdinguserid_,this.dingdingdeptid_,this.username_,this.account_,this.password_,this.changetime_,this.mobile_,this.workplace_,this.memo_,this.isdeleted_);
-      }
-      #endregion
-      #region INotifyPropertyChanged Function
-      public event PropertyChangedEventHandler PropertyChanged;
-      public void NotifyPropertyChanged(string name)
-      {
-         if (PropertyChanged != null)
-         {
-            PropertyChanged(this, new PropertyChangedEventArgs(name));
-         }
-      }
-      #endregion
-      #region ICloneable Function
-      public object Clone()
-      {
-         return base.CloneEntity<User>(this);
-      }
-      public User DeepClone()
-      {
-         return (User)this.Clone();
-      }
-      #endregion ICloneable
       #region SetSQL Function
       /// <summary>
       /// 获取添加数据的SQL语句
@@ -144,7 +118,7 @@ namespace CommonLib.Entity
       public  string SetInsert()      {
          string strSQL = "INSERT INTO [User] (UserID,DingDingUserID,DingDingDeptID,UserName,Account,Password,ChangeTime,Mobile,WorkPlace,Memo,IsDeleted) VALUES (@UserID,@DingDingUserID,@DingDingDeptID,@UserName,@Account,@Password,getdate(),@Mobile,@WorkPlace,@Memo,@IsDeleted)";
          UserID= snowflakeIdWorker.NextId().ToString();
-                     SqlParameter[] sp = new SqlParameter[11];
+            SqlParameter[] sp = new SqlParameter[11];
             sp[0] = new SqlParameter("@UserID", UserID);
             sp[1] = new SqlParameter("@DingDingUserID", DingDingUserID);
             sp[2] = new SqlParameter("@DingDingDeptID", DingDingDeptID);
@@ -163,7 +137,7 @@ namespace CommonLib.Entity
       public  string SetInsertForTransaction(DbHelper dbHelper)      {
          string strSQL = "INSERT INTO [User] (UserID,DingDingUserID,DingDingDeptID,UserName,Account,Password,ChangeTime,Mobile,WorkPlace,Memo,IsDeleted) VALUES (@UserID,@DingDingUserID,@DingDingDeptID,@UserName,@Account,@Password,getdate(),@Mobile,@WorkPlace,@Memo,@IsDeleted)";
          UserID= snowflakeIdWorker.NextId().ToString();
-                     SqlParameter[] sp = new SqlParameter[11];
+            SqlParameter[] sp = new SqlParameter[11];
             sp[0] = new SqlParameter("@UserID", UserID);
             sp[1] = new SqlParameter("@DingDingUserID", DingDingUserID);
             sp[2] = new SqlParameter("@DingDingDeptID", DingDingDeptID);
@@ -391,60 +365,6 @@ namespace CommonLib.Entity
             sp[0] = new SqlParameter("@UserID", UserID);
 
          return new DbHelper().ExcuteNonQuery(strSQL,sp);
-      }
-      /// <summary>
-      /// 更新非空属性。
-      /// <summary>
-      public void UpdatePropFromNotNull(User user_)
-      {
-            if (!String.IsNullOrEmpty(user_.dingdinguserid_)  )
-            {
-               this.dingdinguserid_ = user_.DingDingUserID;
-            }
-            if (!String.IsNullOrEmpty(user_.dingdingdeptid_)  )
-            {
-               this.dingdingdeptid_ = user_.DingDingDeptID;
-            }
-            if (!String.IsNullOrEmpty(user_.username_)  )
-            {
-               this.username_ = user_.UserName;
-            }
-            if (!String.IsNullOrEmpty(user_.account_)  )
-            {
-               this.account_ = user_.Account;
-            }
-            if (!String.IsNullOrEmpty(user_.password_)  )
-            {
-               this.password_ = user_.Password;
-            }
-            if (!String.IsNullOrEmpty(user_.changetime_)  )
-            {
-               this.changetime_ = user_.ChangeTime;
-            }
-            if (!String.IsNullOrEmpty(user_.mobile_)  )
-            {
-               this.mobile_ = user_.Mobile;
-            }
-            if (!String.IsNullOrEmpty(user_.workplace_)  )
-            {
-               this.workplace_ = user_.WorkPlace;
-            }
-            if (!String.IsNullOrEmpty(user_.memo_)  )
-            {
-               this.memo_ = user_.Memo;
-            }
-            if (!String.IsNullOrEmpty(user_.isdeleted_)  )
-            {
-               this.isdeleted_ = user_.IsDeleted;
-            }
-
-      }
-      /// <summary>
-      /// 获取主键的值
-      /// <summary>
-      public override string GetKeyValue()
-      {
-         return ESC(userid_) ;
       }
       #endregion SetSQL Function
       #region GetObject Function

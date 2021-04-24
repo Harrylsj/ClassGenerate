@@ -351,7 +351,7 @@ namespace ClassGenerate.Proc
             StringBuilder sbBody = new StringBuilder();
 
             sbBody.AppendLine(ps.tabMember + "#region Member Variables");
-            sbBody.AppendLine(ps.tabMember + "SnowflakeIdWorker snowflakeIdWorker = new SnowflakeIdWorker();");
+            sbBody.AppendLine(ps.tabMember + "SnowflakeIdWorker snowflakeIdWorker = new SnowflakeIdWorker();//雪花ID");
             for (int i=0;i< dtColumnType.Rows.Count;i++)
             {
                 DataRow drType = dtColumnType.Rows[i];
@@ -428,10 +428,7 @@ namespace ClassGenerate.Proc
                 sbBody.AppendLine(ps.tabMember + "{");
                 sbBody.AppendLine(ps.tabLocalVar + "get{ return " + firstLowerColumnName + "; }");
                 sbBody.Append(ps.tabLocalVar + "set{ " + firstLowerColumnName + " = value; ");
-                if (columnName != "IsDeleted")
-                    sbBody.AppendLine("NotifyPropertyChanged(\"" + firstUpperColumnName + "\");}");
-                else
-                    sbBody.AppendLine("}");
+                sbBody.AppendLine("}");
                 sbBody.AppendLine(ps.tabMember + "}");
                 //----------------------------------------------
                 strSetValues1[index] = ps.tabLocalVar + "this." + firstLowerColumnName + " = " + firstLowerColumnName + ";//" + strColumnDescription;
@@ -500,52 +497,11 @@ namespace ClassGenerate.Proc
             sbBody.AppendLine(ps.tabMember + "#endregion ");
             #endregion
 
-            #region IModel Function-- 接口IModel 成员//lsj
-            sbBody.AppendLine(ps.tabMember + "#region IModel Function");
-            sbBody.AppendLine(ps.tabMember + "public string GetAsString()");
-            sbBody.AppendLine(ps.tabMember + "{");
-            sbBody.AppendLine(ps.tabLocalVar + "return String.Format(\"" + strIndex + "\", " + strValue + ");");
-            sbBody.AppendLine(ps.tabMember + "}");
-            sbBody.AppendLine(ps.tabMember + "#endregion");
-
-            #endregion
            
 
-            #region  IValidate Function--接口IValidate 成员//lsj
-            //2021-2-2-lsj-删除不必要的代码
-            //sbBody.AppendLine(ps.tabMember + "#region IValidate Function");
-            //sbBody.AppendLine(ps.tabMember + "public int Validate()");
-            //sbBody.AppendLine(ps.tabMember + "{");
-            //sbBody.AppendLine(ps.tabLocalVar + "return 1;");
-            //sbBody.AppendLine(ps.tabMember + "}");
-            //sbBody.AppendLine(ps.tabMember + "#endregion");
-            #endregion
 
-            #region INotifyPropertyChanged Function
-            sbBody.AppendLine(ps.tabMember + "#region INotifyPropertyChanged Function");
-            sbBody.AppendLine(ps.tabMember + "public event PropertyChangedEventHandler PropertyChanged;");
-            sbBody.AppendLine(ps.tabMember + "public void NotifyPropertyChanged(string name)");
-            sbBody.AppendLine(ps.tabMember + "{");
-            sbBody.AppendLine(ps.tabLocalVar + "if (PropertyChanged != null)");
-            sbBody.AppendLine(ps.tabLocalVar + "{");
-            sbBody.AppendLine(ps.tabIfLocalVarTop1 + "PropertyChanged(this, new PropertyChangedEventArgs(name));");
-            sbBody.AppendLine(ps.tabLocalVar + "}");
-            sbBody.AppendLine(ps.tabMember + "}");
-            sbBody.AppendLine(ps.tabMember + "#endregion");
-            #endregion
+            
 
-            #region ICloneable
-            sbBody.AppendLine(ps.tabMember + "#region ICloneable Function");
-            sbBody.AppendLine(ps.tabMember + "public object Clone()");
-            sbBody.AppendLine(ps.tabMember + "{");
-            sbBody.AppendLine(ps.tabLocalVar + "return base.CloneEntity<" + strClassName + ">(this);");
-            sbBody.AppendLine(ps.tabMember + "}");
-            sbBody.AppendLine(ps.tabMember + "public " + strClassName + " DeepClone()");
-            sbBody.AppendLine(ps.tabMember + "{");
-            sbBody.AppendLine(ps.tabLocalVar + "return (" + strClassName + ")this.Clone();");
-            sbBody.AppendLine(ps.tabMember + "}");
-            sbBody.AppendLine(ps.tabMember + "#endregion ICloneable");
-            #endregion ICloneable
 
             sbBody.Append(ps.GetDataAccessClassBody_SQL(strTableName, strPrefix, strNamespace));
             //2021-2-10-lsj-写入数据库
@@ -558,168 +514,6 @@ namespace ClassGenerate.Proc
             return ret.ToString();
         }
 
-        /// <summary>
-        /// 多表时,生成单表实体字符串
-        /// </summary>
-        /// <param name="dsColumnType">列类型表</param>
-        /// <param name="dtColumnDescription">列描述表</param>
-        /// <param name="dtDescription">表描述(表)</param>
-        /// <returns></returns>
-        public string GetTableAddashx(DataTable dtColumnType, DataTable dtColumnDescription 
-            , string strTableDescription , string strPrefix, string strNamespace)
-        {
-            StringBuilder ret = new StringBuilder();
-            string strTableName = dtColumnType.TableName;
-
-
-            ////lsj--构造方法1所用的赋值语句。
-            //string[] strSetValues1 = new string[dtColumnType.Rows.Count];
-            ////lsj--构造方法2所用的赋值语句。
-            //string[] strSetValues2 = new string[dtColumnType.Rows.Count];
-
-            ProcString ps = new ProcString();
-            ps.SetTabs(strNamespace);
-            //lsj--类名
-            string strClassName = ps.GetClassName(strTableName);//2021-2-2-lsj
-
-            //lsj--小写的类名--在此做类的对象来用。
-            string strLowerClassName = ps.ConvertStringToUpperOrLower(strClassName, false);
-
-            StringBuilder sbBody = new StringBuilder();
-            //---------------------------------------------
-            //2021-2-22-lsj
-            sbBody.Append(ps.GetDataAccessAddashx(strTableName, strPrefix, strNamespace));
-
-            string strClass = ps.GetCLassByModel_Addashx(strNamespace, strPrefix, strTableName,"","", sbBody.ToString());
-
-            ret.Append(strClass);
-
-            return ret.ToString();
-        }
-        public string GetTableUpdateashx(DataTable dtColumnType, DataTable dtColumnDescription
-            , string strTableDescription, string strPrefix, string strNamespace)
-        {
-            StringBuilder ret = new StringBuilder();
-            string strTableName = dtColumnType.TableName;
-
-
-            ////lsj--构造方法1所用的赋值语句。
-            //string[] strSetValues1 = new string[dtColumnType.Rows.Count];
-            ////lsj--构造方法2所用的赋值语句。
-            //string[] strSetValues2 = new string[dtColumnType.Rows.Count];
-
-            ProcString ps = new ProcString();
-            ps.SetTabs(strNamespace);
-            //lsj--类名
-            string strClassName = ps.GetClassName(strTableName);//2021-2-2-lsj
-
-            //lsj--小写的类名--在此做类的对象来用。
-            string strLowerClassName = ps.ConvertStringToUpperOrLower(strClassName, false);
-
-            StringBuilder sbBody = new StringBuilder();
-            //---------------------------------------------
-            //2021-2-22-lsj
-            sbBody.Append(ps.GetDataAccessUpdateashx(strTableName, strPrefix, strNamespace));
-
-            string strClass = ps.GetCLassByModel_Updateashx(strNamespace, strPrefix, strTableName, "", "", sbBody.ToString());
-
-            ret.Append(strClass);
-
-            return ret.ToString();
-        }
-        public string GetTableDeleteashx(DataTable dtColumnType, DataTable dtColumnDescription
-            , string strTableDescription, string strPrefix, string strNamespace)
-        {
-            StringBuilder ret = new StringBuilder();
-            string strTableName = dtColumnType.TableName;
-
-
-            ////lsj--构造方法1所用的赋值语句。
-            //string[] strSetValues1 = new string[dtColumnType.Rows.Count];
-            ////lsj--构造方法2所用的赋值语句。
-            //string[] strSetValues2 = new string[dtColumnType.Rows.Count];
-
-            ProcString ps = new ProcString();
-            ps.SetTabs(strNamespace);
-            //lsj--类名
-            string strClassName = ps.GetClassName(strTableName);//2021-2-2-lsj
-
-            //lsj--小写的类名--在此做类的对象来用。
-            string strLowerClassName = ps.ConvertStringToUpperOrLower(strClassName, false);
-
-            StringBuilder sbBody = new StringBuilder();
-            //---------------------------------------------
-            //2021-2-22-lsj
-            sbBody.Append(ps.GetDataAccessDeleteashx(strTableName, strPrefix, strNamespace));
-
-            string strClass = ps.GetCLassByModel_Deleteashx(strNamespace, strPrefix, strTableName, "", "", sbBody.ToString());
-
-            ret.Append(strClass);
-
-            return ret.ToString();
-        }
-        public string GetTableGetashx(DataTable dtColumnType, DataTable dtColumnDescription
-            , string strTableDescription, string strPrefix, string strNamespace)
-        {
-            StringBuilder ret = new StringBuilder();
-            string strTableName = dtColumnType.TableName;
-
-
-            ////lsj--构造方法1所用的赋值语句。
-            //string[] strSetValues1 = new string[dtColumnType.Rows.Count];
-            ////lsj--构造方法2所用的赋值语句。
-            //string[] strSetValues2 = new string[dtColumnType.Rows.Count];
-
-            ProcString ps = new ProcString();
-            ps.SetTabs(strNamespace);
-            //lsj--类名
-            string strClassName = ps.GetClassName(strTableName);//2021-2-2-lsj
-
-            //lsj--小写的类名--在此做类的对象来用。
-            string strLowerClassName = ps.ConvertStringToUpperOrLower(strClassName, false);
-
-            StringBuilder sbBody = new StringBuilder();
-            //---------------------------------------------
-            //2021-2-22-lsj
-            sbBody.Append(ps.GetDataAccessGetashx(strTableName, strPrefix, strNamespace));
-
-            string strClass = ps.GetCLassByModel_Getashx(strNamespace, strPrefix, strTableName, "", "", sbBody.ToString());
-
-            ret.Append(strClass);
-
-            return ret.ToString();
-        }
-        public string GetTableGetCountashx(DataTable dtColumnType, DataTable dtColumnDescription
-           , string strTableDescription, string strPrefix, string strNamespace)
-        {
-            StringBuilder ret = new StringBuilder();
-            string strTableName = dtColumnType.TableName;
-
-
-            ////lsj--构造方法1所用的赋值语句。
-            //string[] strSetValues1 = new string[dtColumnType.Rows.Count];
-            ////lsj--构造方法2所用的赋值语句。
-            //string[] strSetValues2 = new string[dtColumnType.Rows.Count];
-
-            ProcString ps = new ProcString();
-            ps.SetTabs(strNamespace);
-            //lsj--类名
-            string strClassName = ps.GetClassName(strTableName);//2021-2-2-lsj
-
-            //lsj--小写的类名--在此做类的对象来用。
-            string strLowerClassName = ps.ConvertStringToUpperOrLower(strClassName, false);
-
-            StringBuilder sbBody = new StringBuilder();
-            //---------------------------------------------
-            //2021-2-22-lsj
-            sbBody.Append(ps.GetDataAccessGetCountashx(strTableName, strPrefix, strNamespace));
-
-            string strClass = ps.GetCLassByModel_GetCountashx(strNamespace, strPrefix, strTableName, "", "", sbBody.ToString());
-
-            ret.Append(strClass);
-
-            return ret.ToString();
-        }
         public string GetIndexSQL(string strTableName, out string strPKTableName, out string strWithoutPKTableName
             ,out string strNotReadTableName,  string HOSPITAL_NO)
         {

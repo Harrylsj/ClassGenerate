@@ -19,7 +19,5 @@ namespace ClassGenerate.Proc
         public object Value;//name_
         public string FieldType;
         public string ValueIsNotEmpty;
-        public string ValueIsNotNull;//!String.IsNullOrEmpty(this.NAME)
-        public string FieldNameIsNotNull;//!String.IsNullOrEmpty(new_jhpix_pat_master_index_.NAME)
     }
 }

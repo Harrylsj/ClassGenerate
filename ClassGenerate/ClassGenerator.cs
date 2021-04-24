@@ -38,7 +38,6 @@ namespace ClassGenerate
             pt.SetConnectionString(LoadServer.cn);
             if (TestAndLoad())
             {
-                btnPreview.Enabled = true;
                 btnGenerate.Enabled = true;
             } 
         }
@@ -72,7 +71,6 @@ namespace ClassGenerate
 
             if (TestAndLoad())
             {
-                btnPreview.Enabled = true;
                 btnGenerate.Enabled = true;
             } 
 
@@ -203,7 +201,7 @@ namespace ClassGenerate
             List<string> option = GetChecked();
             if (option.Count <= 0)
             {
-                MessageBox.Show("请选择至少一项生成选项(实体类/数据访问层)");
+                MessageBox.Show("请选择至少一项生成选项");
                 return;
             }
             txtPreview.Text = "";
@@ -235,59 +233,13 @@ namespace ClassGenerate
                         
                     }
                 }
-                if (ckashx.Checked)
-                {
-                    g.Toashx(isWrite, tablesName);
-                }
-                if (ckIndex.Checked)
-                {
-                    if (string.IsNullOrEmpty(txtHOSPITAL_NO.Text.Trim()))
-                    {
-                        MessageBox.Show("HOSPITAL_NO不可为空！");
-                        return ;
-                    }
-                    ret = new StringBuilder();
-                    txtPreview.Text = "";
-                    txtPreview.Text += "----修改主键SQL\r\n";
-                    txtPreview.Text += g.ToIndexSQL(isWrite, tablesName,txtHOSPITAL_NO.Text .Trim());
-                }
-                if (ckDataAccess.Checked)
-                {
-                    txtPreview.Text += "//数据访问层\r\n";
-                    txtPreview.Text += g.ToDataAccessForTables(isWrite, tablesName);
-                }
-                if (ckOracleSQL.Checked)
-                {
-                    txtPreview.Text += "//数据访问层\r\n";
-                    txtPreview.Text += g.ToDataAccess_SQL(isWrite, tablesName);
-                    
-                }
-                if (ckFullManage.Checked)
-                {
-                    txtPreview.Text += "//FullManage\r\n";
-                    txtPreview.Text += g.ToFullManage(isWrite, tablesName);
-                }
-                if (ckProc.Checked)
-                {
-                    txtPreview.Text += "--存储过程\r\n";
-                    txtPreview.Text += g.ToProc(isWrite, tablesName);
-                }
-                if (ckCache.Checked)
-                {
-                    txtPreview.Text += "//缓存Cache\r\n";
-                    txtPreview.Text += g.ToCache(isWrite, tablesName);
-                }
-                if (ckFullCache.Checked)
-                {
-                    txtPreview.Text += "//缓存FullCache\r\n";
-                    txtPreview.Text += g.ToFullCache(isWrite, tablesName);
-                }
+                
+                
+               
                 if (!string.IsNullOrEmpty(path) && ckDocument.Checked)
                 {
                     g.ToWord(tablesName);
                 }
-
-                tabControl1.SelectedIndex = 1; 
             }
             else
             {
@@ -323,6 +275,7 @@ namespace ClassGenerate
                 {
                     path = fbd.SelectedPath;
                     Go(true);
+                    MessageBox.Show("生成成功！");
                 }
                 else
                 {
@@ -359,118 +312,16 @@ namespace ClassGenerate
         } 
         #endregion
 
-        //lsj
-        private void btnFilter_Click(object sender, EventArgs e)
-        {
-            List<String> tables = new List<String>();
-            DataSet ds = da.ReturnDataSet(GetFilterSQL());
-            BindAllTables(ds.Tables[0],false);
-            
-        }
-        private string GetFilterSQL()
-        {
-            return "SELECT Table_name as name FROM  User_tables where User_tables.Table_name like 'JHOUTPAT%'";
-        }
-        private void btnFilter_Click_Backup()
-        {
-
-            List<String> tables = new List<String>();
-            DataSet ds = da.ReturnDataSet("SELECT Table_name as name FROM  User_tables where " +
-                "User_tables.Table_name like 'JHINPAT_FP%'"
-                + " or User_tables.Table_name = 'JHBD_CV_ITEMS'"
-                + " or User_tables.Table_name = 'JHPAT_MASTER_INDEX'"
-                + " or User_tables.Table_name = 'JHINPAT_ADT_LOG'"
-                //------------------------
-                + " or User_tables.Table_name like 'JHBD_%'"
-                + " or User_tables.Table_name like 'JHINPAT_MR%'"
-                + " or User_tables.Table_name like 'JHINPAT_PAT%'"
-                + " or User_tables.Table_name like 'JHMR_TEMPLET%'"
-                + " or User_tables.Table_name like 'JHPAT_PREV%'"
-                + " or User_tables.Table_name like 'JHPIX_%'"
-                );
-            for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-            {
-                tables.Add(ds.Tables[0].Rows[i][0].ToString());
-            }
-            //tables.Add("JHBD_CV_ITEMS");
-            //tables.Add("JHPIX_ADDRESS");
-            //tables.Add("JHPIX_ENTITY_INDEX");
-            //tables.Add("JHPIX_MERGE_LOG");
-            //tables.Add("JHPIX_PAT_ADDRESS");
-            //tables.Add("JHPIX_PAT_CROSS_REF");
-            //tables.Add("jhpix_pat_identity");
-            //tables.Add("JHPIX_PAT_VISIT");
-            //tables.Add("JHPIX_PAT_VISIT_RELATION");
-
-            //tables.Add("JHINPAT_FP_BLOOD_TRANS");
-            //tables.Add("JHINPAT_FP_DIAGNOSIS");
-            //tables.Add("JHINPAT_FP_DIAG_COMPARING");
-            //tables.Add("JHINPAT_FP_MEDICAL_COSTS");
-            //tables.Add("JHINPAT_FP_OPERATION");
-            //tables.Add("JHINPAT_FP_TUMOUR");
-            //tables.Add("JHINPAT_FP_TUMOUR_DETAIL");
-            //tables.Add("JHINPAT_PAT_NEWBORN_BABY");
-            //tables.Add("JHINPAT_PAT_VISIT");
-            //tables.Add("JHINPAT_PAT_VISIT_MR");
-            //tables.Add("JHINPAT_PAT_VISIT_RELATION");
-            //tables.Add("JHINPAT_PAT_VITAL_SIGNS");
-
-            //tables.Add("JHPAT_MASTER_INDEX");
-            //tables.Add("JHPAT_PREV_ALERGY");
-            //tables.Add("JHPAT_PREV_COMPLAINED");
-            //tables.Add("JHPAT_PREV_DIAGNOSE");
-            //tables.Add("JHPAT_PREV_DRUGS");
-            //tables.Add("JHPAT_PREV_OPERATION");
-            //tables.Add("JHPAT_PREV_REACTIONS");
-            //JHINPAT_FP
-            foreach (ListViewItem item in lvTables.Items)
-            {
-                item.Checked = false;
-            }
-            foreach (String table in tables)
-            {
-                foreach (ListViewItem item in lvTables.Items)
-                {
-                    string tablename = item.SubItems[1].Text.ToLower();
-                    if (tablename == table.ToLower())
-                        item.Checked = true;
-                }
-            }
-        }
-        private void btnOnOperation_Click(object sender, EventArgs e)
-        {
-            //tables = new Dictionary<String, Boolean>();
-            //tables.Add("T_UseComm", true);
-            //tables.Add("T_UseDrug", true);
-            //tables.Add("T_OccurEvent", true);
-            //tables.Add("T_UseSap", true);
-            //tables.Add("T_PhysioData", true);
-            //tables.Add("T_AnalyseSap", true);
-            //tables.Add("T_FactDisease", true);
-            //tables.Add("T_FactOpe", true);
-            //tables.Add("T_FactWorker", true);
-            //tables.Add("T_DoOperation", true);
-            //foreach (ListViewItem item in lvTables.Items)
-            //{
-            //    string tablename = item.SubItems[1].Text;
-            //    foreach (var pair in tables)
-            //    {
-            //        if (pair.Key.ToString() == tablename)
-            //        {
-            //            item.Checked = tables[tablename];
-            //            break;
-            //        }
-            //    }
-            //    if (item.Checked)
-            //        continue;
-            //    item.Checked = false;
-            //}
-        }
+        
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
 
         }
 
+        private void txtNamespace_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
